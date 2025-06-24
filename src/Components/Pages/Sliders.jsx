@@ -44,7 +44,7 @@ const slides = [
   },
 ];
 
-const ImageSlider = () => {
+const Sliders = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   return (
@@ -53,7 +53,7 @@ const ImageSlider = () => {
         spaceBetween={0}
         slidesPerView={1}
         pagination={{ clickable: true }}
-        autoplay={{ delay: 3000, disableOnInteraction: false }}
+        autoplay={{ delay: 4000, disableOnInteraction: false }}
         loop={true}
         modules={[Autoplay, Pagination]}
         onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
@@ -76,7 +76,7 @@ const ImageSlider = () => {
                   transition={{ duration: 0.8 }}
                   className="absolute inset-0 flex flex-col justify-center px-4 sm:px-10 md:px-20 text-left"
                 >
-                  <h2 className="text-base sm:text-lg md:text-5xl font-bold text-green-900 max-w-full whitespace-nowrap overflow-hidden text-ellipsis">
+                  <h2 className="text-base sm:text-lg md:text-2xl font-bold text-green-900 max-w-full whitespace-nowrap overflow-hidden text-ellipsis">
                     {slide.title}
                   </h2>
                   <p className="mt-2 text-sm sm:text-base md:text-lg text-green-900 font-semibold max-w-2xl">
@@ -98,4 +98,4 @@ const ImageSlider = () => {
   );
 };
 
-export default ImageSlider;
+export default Sliders;
