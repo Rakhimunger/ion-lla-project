@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   FaUser,
   FaEnvelope,
@@ -9,6 +9,49 @@ import {
 } from "react-icons/fa";
 
 const LegalServices = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    contact: "",
+    message: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [successMsg, setSuccessMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setSuccessMsg("");
+    setErrorMsg("");
+
+    try {
+      const response = await fetch("http://localhost:3000/api/form", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSuccessMsg("Form submitted successfully!");
+        setFormData({ name: "", email: "", contact: "", message: "" });
+      } else {
+        setErrorMsg(data?.error || "Something went wrong.");
+      }
+    } catch (error) {
+      setErrorMsg("Unable to submit. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="bg-white text-black px-4 md:px-16 py-12 max-w-screen-xl mx-auto">
       {/* Heading */}
@@ -140,14 +183,18 @@ const LegalServices = () => {
         </div>
 
         <div className="bg-gray-50 p-8 rounded-xl shadow-lg max-w-xl mx-auto">
-          <form className="space-y-5">
+          <form className="space-y-5" onSubmit={handleSubmit}>
             {/* Name */}
             <div className="relative">
               <FaUser className="absolute top-3.5 left-4 text-gray-500" />
               <input
                 type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
                 placeholder="Your Name"
                 className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-700 text-black"
+                required
               />
             </div>
 
@@ -156,8 +203,12 @@ const LegalServices = () => {
               <FaEnvelope className="absolute top-3.5 left-4 text-gray-500" />
               <input
                 type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
                 placeholder="Your Email"
                 className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-700 text-black"
+                required
               />
             </div>
 
@@ -166,8 +217,12 @@ const LegalServices = () => {
               <FaPhone className="absolute top-3.5 left-4 text-gray-500" />
               <input
                 type="text"
+                name="contact"
+                value={formData.contact}
+                onChange={handleChange}
                 placeholder="Contact Number"
                 className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-700 text-black"
+                required
               />
             </div>
 
@@ -175,18 +230,29 @@ const LegalServices = () => {
             <div className="relative">
               <FaRegCommentDots className="absolute top-3.5 left-4 text-gray-500" />
               <textarea
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
                 placeholder="Your Message"
                 rows="4"
                 className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-700 text-black resize-none"
+                required
               ></textarea>
             </div>
+
+            {/* Success/Error Message */}
+            {successMsg && (
+              <p className="text-green-700 font-semibold">{successMsg}</p>
+            )}
+            {errorMsg && <p className="text-red-600">{errorMsg}</p>}
 
             {/* Submit */}
             <button
               type="submit"
+              disabled={loading}
               className="w-full bg-green-900 text-white font-bold py-3 rounded-full hover:bg-green-800 transition duration-200"
             >
-              Submit
+              {loading ? "Submitting..." : "Submit"}
             </button>
           </form>
         </div>
