@@ -19,7 +19,7 @@ const ContactForm = () => {
     e.preventDefault();
 
     try {
-      const res = await fetch("http://localhost:3000/api/form", {
+      const res = await fetch("https://iotlla-backend.onrender.com/api/form", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
