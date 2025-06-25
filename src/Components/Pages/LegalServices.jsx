@@ -31,21 +31,25 @@ const LegalServices = () => {
     setErrorMsg("");
 
     try {
-      const response = await fetch("http://localhost:3000/api/form", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        "https://iotlla-backend.onrender.com/api/contactform",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        }
+      );
 
       const data = await response.json();
 
-      if (response.ok) {
+      if (!response.ok) {
+        setErrorMsg(data?.error || "Submission failed.");
+      } else {
         setSuccessMsg("Form submitted successfully!");
         setFormData({ name: "", email: "", contact: "", message: "" });
-      } else {
-        setErrorMsg(data?.error || "Something went wrong.");
       }
     } catch (error) {
+      console.error("Submit Error:", error);
       setErrorMsg("Unable to submit. Please try again later.");
     } finally {
       setLoading(false);
@@ -56,7 +60,6 @@ const LegalServices = () => {
     <div className="bg-white text-black px-4 md:px-16 py-12 max-w-screen-xl mx-auto">
       {/* Heading */}
       <div className="text-center mb-12">
-        <h2 className="text-4xl text-green-800 mx-auto mb-2" />
         <h2 className="text-3xl md:text-5xl font-bold text-black">
           Our Legal Services
         </h2>
@@ -64,69 +67,47 @@ const LegalServices = () => {
 
       {/* Legal Services Section */}
       <div className="grid md:grid-cols-2 gap-10 text-justify">
-        {/* Column 1 */}
-        <div className="space-y-6">
-          {[
-            {
-              title: "1. Divorce Consultation & Legal Support",
-              desc: "We assist clients in understanding the legal process of divorce, ensuring their rights and interests are protected. Our team handles mutual consent divorces and other family matters with sensitivity and professionalism.",
-            },
-            {
-              title: "2. Trademark Registration",
-              desc: "Secure your brand identity with our end-to-end trademark registration services. We handle search, documentation, filing, and follow-up.",
-            },
-            {
-              title: "3. Sales & Lease Agreements",
-              desc: "Draft and register legally binding sale or lease agreements. We ensure every detail is clearly documented to avoid future disputes.",
-            },
-            {
-              title: "4. Power of Attorney",
-              desc: "Empower a trusted individual with a valid Power of Attorney. We help draft and notarize documents for property, finance, or personal matters.",
-            },
-          ].map((item, idx) => (
-            <div
-              key={idx}
-              className="p-4 rounded-lg hover:bg-gray-50 transition"
-            >
-              <h3 className="text-lg md:text-xl font-bold text-green-800 mb-1">
-                {item.title}
-              </h3>
-              <p>{item.desc}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Column 2 */}
-        <div className="space-y-6">
-          {[
-            {
-              title: "5. Business Agreements",
-              desc: "Agreements for startups, partnerships, and firms including service contracts, joint ventures, partnership deeds, and more.",
-            },
-            {
-              title: "6. Contract Writing",
-              desc: "Professionally written contracts like employment contracts, vendor agreements, NDAs, MOUs, and more.",
-            },
-            {
-              title: "7. Will Drafting & Registration",
-              desc: "Ensure your wishes are legally documented with a properly drafted will and registered under legal supervision.",
-            },
-            {
-              title: "8. Challan Disposal Services",
-              desc: "Got a traffic challan? We help resolve legal penalties through court representation and disposal services.",
-            },
-          ].map((item, idx) => (
-            <div
-              key={idx}
-              className="p-4 rounded-lg hover:bg-gray-50 transition"
-            >
-              <h3 className="text-lg md:text-xl font-bold text-green-800 mb-1">
-                {item.title}
-              </h3>
-              <p>{item.desc}</p>
-            </div>
-          ))}
-        </div>
+        {[
+          {
+            title: "1. Divorce Consultation & Legal Support",
+            desc: "We assist clients in understanding the legal process of divorce, ensuring their rights and interests are protected.",
+          },
+          {
+            title: "2. Trademark Registration",
+            desc: "Secure your brand identity with our trademark registration services — search, documentation, filing, and follow-up.",
+          },
+          {
+            title: "3. Sales & Lease Agreements",
+            desc: "Draft and register legally binding sale or lease agreements.",
+          },
+          {
+            title: "4. Power of Attorney",
+            desc: "Draft and notarize Power of Attorney documents for property, finance, or personal matters.",
+          },
+          {
+            title: "5. Business Agreements",
+            desc: "Agreements for startups, partnerships, joint ventures, and more.",
+          },
+          {
+            title: "6. Contract Writing",
+            desc: "Professional contracts like NDAs, MOUs, vendor and employment agreements.",
+          },
+          {
+            title: "7. Will Drafting & Registration",
+            desc: "Get a legally valid will drafted and registered.",
+          },
+          {
+            title: "8. Challan Disposal Services",
+            desc: "Resolve traffic challans through court representation.",
+          },
+        ].map((item, idx) => (
+          <div key={idx} className="p-4 rounded-lg hover:bg-gray-50 transition">
+            <h3 className="text-lg md:text-xl font-bold text-green-800 mb-1">
+              {item.title}
+            </h3>
+            <p>{item.desc}</p>
+          </div>
+        ))}
       </div>
 
       {/* Court Marriage Section */}
@@ -138,23 +119,21 @@ const LegalServices = () => {
           </h3>
         </div>
         <p className="mb-6">
-          We offer complete court marriage assistance across multiple states,
-          helping couples with lawful registration and documentation.
+          We offer complete court marriage assistance across multiple states.
         </p>
-
         <div className="space-y-4">
           {[
             {
               title: "Court Marriage in Delhi",
-              desc: "End-to-end assistance for court marriage under the Special Marriage Act. We guide you through document preparation, application submission, verification, and final registration..",
+              desc: "Special Marriage Act guidance including document prep and registration.",
             },
             {
               title: "Court Marriage in Haryana",
-              desc: "From inter-caste to inter-religion marriages, we simplify the process of court marriage in Haryana with step-by-step legal support..",
+              desc: "Support for inter-caste, inter-religion marriages with legal help.",
             },
             {
               title: "Court Marriage in Uttar Pradesh",
-              desc: "Our experts make the court marriage process in Uttar Pradesh smooth and transparent by handling all necessary paperwork and appointments..",
+              desc: "We handle appointments, paperwork, and legal compliance.",
             },
           ].map((item, idx) => (
             <div
@@ -240,7 +219,7 @@ const LegalServices = () => {
               ></textarea>
             </div>
 
-            {/* Success/Error Message */}
+            {/* Messages */}
             {successMsg && (
               <p className="text-green-700 font-semibold">{successMsg}</p>
             )}
