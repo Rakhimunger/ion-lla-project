@@ -16,51 +16,42 @@ const LegalServices = () => {
     message: "",
   });
 
-  const [loading, setLoading] = useState(false);
-  const [successMsg, setSuccessMsg] = useState("");
-  const [errorMsg, setErrorMsg] = useState("");
-
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setSuccessMsg("");
-    setErrorMsg("");
 
     try {
-      const response = await fetch(
-        "https://iotlla-backend.onrender.com/api/contactform",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        }
-      );
+      const res = await fetch("https://iotlla-backend.onrender.com/api/form", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-      let data;
-      try {
-        data = await response.json(); // Attempt to parse only if response is JSON
-      } catch (err) {
-        throw new Error("Server did not return valid JSON:", err);
-      }
-
-      if (!response.ok) {
-        setErrorMsg(data?.error || "Submission failed.");
+      if (res.ok) {
+        alert("Form submitted successfully!");
+        setFormData({
+          name: "",
+          email: "",
+          contact: "",
+          message: "",
+        });
       } else {
-        setSuccessMsg("Form submitted successfully!");
-        setFormData({ name: "", email: "", contact: "", message: "" });
+        const err = await res.json();
+        alert(err.error || "Failed to submit the form.");
       }
     } catch (error) {
-      console.error("Submit Error:", error);
-      setErrorMsg(error.message || "Unable to submit. Please try again later.");
-    } finally {
-      setLoading(false);
+      console.error("Error:", error);
+      alert("Something went wrong. Please try again later.");
     }
   };
-
   return (
     <div className="bg-white text-black px-4 md:px-16 py-12 max-w-screen-xl mx-auto">
       {/* Heading */}
@@ -168,76 +159,58 @@ const LegalServices = () => {
 
         <div className="bg-gray-50 p-8 rounded-xl shadow-lg max-w-xl mx-auto">
           <form className="space-y-5" onSubmit={handleSubmit}>
-            {/* Name */}
-            <div className="relative">
-              <FaUser className="absolute top-3.5 left-4 text-gray-500" />
+            <div>
               <input
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="Your Name"
-                className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-700 text-black"
+                placeholder="Full Name"
                 required
+                className="w-full px-5 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-green-600 transition duration-300"
               />
             </div>
-
-            {/* Email */}
-            <div className="relative">
-              <FaEnvelope className="absolute top-3.5 left-4 text-gray-500" />
+            <div>
               <input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="Your Email"
-                className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-700 text-black"
+                placeholder="Email Address"
                 required
+                className="w-full px-5 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-green-600 transition duration-300"
               />
             </div>
-
-            {/* Phone */}
-            <div className="relative">
-              <FaPhone className="absolute top-3.5 left-4 text-gray-500" />
+            <div>
               <input
-                type="text"
+                type="tel"
                 name="contact"
                 value={formData.contact}
                 onChange={handleChange}
                 placeholder="Contact Number"
-                className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-700 text-black"
                 required
+                className="w-full px-5 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-green-600 transition duration-300"
               />
             </div>
-
-            {/* Message */}
-            <div className="relative">
-              <FaRegCommentDots className="absolute top-3.5 left-4 text-gray-500" />
+            <div>
               <textarea
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
-                placeholder="Your Message"
                 rows="4"
-                className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-700 text-black resize-none"
+                placeholder="Your Message"
                 required
-              ></textarea>
+                className="w-full px-5 py-3 border border-gray-300 rounded-xl shadow-sm resize-none focus:outline-none focus:ring-2 focus:ring-green-600 transition duration-300"
+              />
             </div>
-
-            {/* Messages */}
-            {successMsg && (
-              <p className="text-green-700 font-semibold">{successMsg}</p>
-            )}
-            {errorMsg && <p className="text-red-600">{errorMsg}</p>}
-
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-green-900 text-white font-bold py-3 rounded-full hover:bg-green-800 transition duration-200"
-            >
-              {loading ? "Submitting..." : "Submit"}
-            </button>
+            <div className="text-center">
+              <button
+                type="submit"
+                className="bg-green-700 hover:bg-green-800 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-transform transform hover:scale-105 duration-300"
+              >
+                Submit
+              </button>
+            </div>
           </form>
         </div>
       </div>
