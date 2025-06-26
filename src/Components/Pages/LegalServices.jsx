@@ -40,7 +40,12 @@ const LegalServices = () => {
         }
       );
 
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json(); // Attempt to parse only if response is JSON
+      } catch (err) {
+        throw new Error("Server did not return valid JSON:", err);
+      }
 
       if (!response.ok) {
         setErrorMsg(data?.error || "Submission failed.");
@@ -50,7 +55,7 @@ const LegalServices = () => {
       }
     } catch (error) {
       console.error("Submit Error:", error);
-      setErrorMsg("Unable to submit. Please try again later.");
+      setErrorMsg(error.message || "Unable to submit. Please try again later.");
     } finally {
       setLoading(false);
     }
